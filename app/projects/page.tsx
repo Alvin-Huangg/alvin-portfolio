@@ -125,6 +125,18 @@ const projects = [
   },
 ]
 
+// Projects to surface at the top of the list, in this order.
+const PINNED = ['groceries', 'apple']
+const pinRank = (id: string) => {
+  const i = PINNED.indexOf(id)
+  return i === -1 ? PINNED.length : i
+}
+// Stable sort: pinned ids first (in PINNED order), everything else untouched.
+const orderedProjects = [...projects].sort((a, b) => pinRank(a.id) - pinRank(b.id))
+
+// Drop any hardcoded "0N / " prefix so we can renumber by display position.
+const metaLabel = (meta: string) => meta.replace(/^\d+\s*\/\s*/, '')
+
 function ProjectsPageInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -179,7 +191,7 @@ function ProjectsPageInner() {
 
       {!selected ? (
         <div className="max-w-[520px] xl:max-w-[680px] 2xl:max-w-[780px] 3xl:max-w-[900px]">
-          {projects.map((p, i) => (
+          {orderedProjects.map((p, i) => (
             <div
               key={p.id}
               onClick={() => handleClick(p.id, p.protected)}
@@ -188,8 +200,9 @@ function ProjectsPageInner() {
               onKeyDown={(e) => { if (e.key === 'Enter') handleClick(p.id, p.protected) }}
               className={`py-4 px-2 border-b border-neutral-100 dark:border-neutral-900 cursor-pointer border-l-2 border-l-transparent hover:border-l-accent hover:bg-accent/5 rounded-r-sm transition-all duration-150 group ${i === 0 ? 'border-t border-neutral-100 dark:border-neutral-900' : ''}`}
             >
-              <p className="text-[12px] uppercase tracking-wider text-neutral-400 dark:text-neutral-600 mb-1">{p.meta}</p>
+              <p className="text-[12px] uppercase tracking-wider text-neutral-400 dark:text-neutral-600 mb-1">{String(i + 1).padStart(2, '0')} / {metaLabel(p.meta)}</p>
               <p className="text-[16px] font-medium mb-1.5 group-hover:text-accent transition-colors">
+                {PINNED.includes(p.id) && <span className="mr-1.5">📌</span>}
                 {p.title}
                 {p.protected && !unlocked && <span className="text-[12px] text-neutral-400 border border-neutral-200 dark:border-neutral-800 rounded-full px-2 py-0.5 ml-2">available on request</span>}
               </p>
@@ -210,8 +223,8 @@ function ProjectsPageInner() {
           <button onClick={clearProject} className="text-[13px] text-neutral-400 hover:text-accent mb-7 flex items-center gap-1 transition-colors hover:-translate-x-0.5 transform duration-150 focus-visible:ring-2 focus-visible:ring-accent rounded">
             ← back to projects
           </button>
-          <p className="text-[12px] uppercase tracking-wider text-neutral-400 dark:text-neutral-600 mb-1">{proj.meta}</p>
-          <h2 className="text-[21px] font-medium mb-6 leading-tight">{proj.title}</h2>
+          <p className="text-[12px] uppercase tracking-wider text-neutral-400 dark:text-neutral-600 mb-1">{metaLabel(proj.meta)}</p>
+          <h2 className="text-[21px] font-medium mb-6 leading-tight">{PINNED.includes(proj.id) && <span className="mr-1.5">📌</span>}{proj.title}</h2>
 
           {proj.id === 'apple' ? (
             <div className="mb-8">
