@@ -1,0 +1,295 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400&family=Geist:wght@300;400;500&display=swap');
+
+:root {
+  --font-geist-sans: 'Geist', sans-serif;
+  --font-geist-mono: 'Geist Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+/* Smooth theme transitions — applies only where Tailwind doesn't already set one */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+
+body {
+  font-family: var(--font-geist-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Warm light mode — easier on the eyes */
+html:not(.dark) {
+  background-color: #f7f4f0;
+}
+
+html:not(.dark) body {
+  background-color: #f7f4f0;
+}
+
+html:not(.dark) .bg-white {
+  background-color: #f7f4f0;
+}
+
+html:not(.dark) .bg-white\/85 {
+  background-color: rgb(247 244 240 / 0.88);
+}
+
+html:not(.dark) .bg-neutral-50 {
+  background-color: #f0ebe4;
+}
+
+html:not(.dark) .border-neutral-100 {
+  border-color: #e2d9cf;
+}
+
+html:not(.dark) .border-neutral-200 {
+  border-color: #d6ccc1;
+}
+
+::selection {
+  background: #edf5ee;
+  color: #3a7d44;
+}
+
+.dark ::selection {
+  background: #0d1f10;
+  color: #5dbf6a;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Briefing sketch animations ─────────────── */
+/* desk-run illustration animations */
+@keyframes desk-shake {
+  0%,18%,82%,100% { transform: translate(0,0) rotate(0deg); }
+  20% { transform: translate(-2px,-1px) rotate(-0.6deg); }
+  25% { transform: translate(2px, 1px) rotate(0.6deg); }
+  30% { transform: translate(-1px, 2px) rotate(-0.4deg); }
+  35% { transform: translate(2px,-2px) rotate(0.5deg); }
+  40% { transform: translate(-2px, 1px) rotate(-0.6deg); }
+  45% { transform: translate(2px,-1px) rotate(0.5deg); }
+  50% { transform: translate(-1px,-2px) rotate(-0.4deg); }
+  55% { transform: translate(1px, 2px) rotate(0.4deg); }
+  60% { transform: translate(-1px,-1px) rotate(-0.3deg); }
+  65% { transform: translate(1px, 1px) rotate(0.3deg); }
+  70% { transform: translate(-1px, 0px) rotate(-0.2deg); }
+  75% { transform: translate(0px, 1px) rotate(0.2deg); }
+}
+@keyframes drip-ur { 0%,100%{opacity:0;transform:translate(0,0) scale(1)} 20%{opacity:.85;transform:translate(0,0) scale(1)} 80%{opacity:0;transform:translate(9px,-13px) scale(.5)} }
+@keyframes drip-r  { 0%,100%{opacity:0;transform:translate(0,0) scale(1)} 20%{opacity:.85;transform:translate(0,0) scale(1)} 80%{opacity:0;transform:translate(14px, 2px) scale(.5)} }
+@keyframes drip-dr { 0%,100%{opacity:0;transform:translate(0,0) scale(1)} 20%{opacity:.85;transform:translate(0,0) scale(1)} 80%{opacity:0;transform:translate(7px, 13px) scale(.5)} }
+@keyframes drip-dl { 0%,100%{opacity:0;transform:translate(0,0) scale(1)} 20%{opacity:.85;transform:translate(0,0) scale(1)} 80%{opacity:0;transform:translate(-5px,12px) scale(.5)} }
+@keyframes drip-u  { 0%,100%{opacity:0;transform:translate(0,0) scale(1)} 20%{opacity:.85;transform:translate(0,0) scale(1)} 80%{opacity:0;transform:translate(2px,-14px) scale(.5)} }
+@keyframes run-motion { 0%,100%{opacity:0;transform:scaleX(.2)} 40%,60%{opacity:.55;transform:scaleX(1)} }
+@keyframes anger-flash { 0%,45%,100%{opacity:0;transform:scale(.6) rotate(-5deg)} 55%,75%{opacity:1;transform:scale(1) rotate(3deg)} 85%{opacity:.4;transform:scale(.8) rotate(-2deg)} }
+@keyframes sweat-drop { 0%,100%{opacity:0;transform:translateY(0)} 30%{opacity:.8;transform:translateY(0)} 80%{opacity:0;transform:translateY(8px)} }
+
+@keyframes cheers-left {
+  0%, 28%, 90%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+  55%, 65%           { transform: translate(9px, -26px) rotate(-20deg); }
+}
+@keyframes cheers-right {
+  0%, 28%, 90%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+  55%, 65%           { transform: translate(-9px, -26px) rotate(20deg); }
+}
+@keyframes clink-pop {
+  0%, 50%, 100% { opacity: 0; transform: scale(0.4); }
+  62%           { opacity: 1; transform: scale(1.1); }
+  72%           { opacity: 0; transform: scale(1.3); }
+}
+@keyframes spin-fan {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes lean {
+  0%, 100% { transform: rotate(-2deg) translateX(-2px); }
+  50%       { transform: rotate(2deg)  translateX(2px);  }
+}
+@keyframes steam-rise {
+  0%   { opacity: 0.55; transform: translateY(0)    scaleX(1);    }
+  50%  { opacity: 0.3;  transform: translateY(-9px)  scaleX(1.15); }
+  100% { opacity: 0;    transform: translateY(-20px) scaleX(0.7);  }
+}
+@keyframes sketch-draw {
+  from { stroke-dashoffset: 1200; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes sketch-bob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+@keyframes record-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.sketch-draw { stroke-dasharray: 1200; stroke-dashoffset: 1200; animation: sketch-draw 1.8s ease-out forwards; }
+.sketch-draw-slow { stroke-dasharray: 1200; stroke-dashoffset: 1200; animation: sketch-draw 2.8s ease-out forwards; }
+.sketch-bob { animation: sketch-bob 3s ease-in-out infinite; }
+.steam-1 { animation: steam-rise 2.2s ease-out infinite; }
+.steam-2 { animation: steam-rise 2.2s ease-out 0.7s infinite; }
+.steam-3 { animation: steam-rise 2.2s ease-out 1.4s infinite; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.25s ease forwards;
+}
+
+.animate-pulse-dot {
+  animation: pulse 1.8s infinite;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus-visible ring for keyboard nav */
+:focus-visible {
+  outline: 2px solid #3a7d44;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Suppress focus ring for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Subtle grain texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.035;
+}
+
+.dark body::before {
+  opacity: 0.04;
+}
+
+html.dark {
+  background-color: #1e1e1e;
+}
+
+/* Staggered slide-up for list items */
+@keyframes staggerUp {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-stagger {
+  opacity: 0;
+  animation: staggerUp 0.35s ease-out forwards;
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Leaflet tooltip — remove default white border/arrow */
+.leaflet-tooltip-clean {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.leaflet-tooltip-clean::before {
+  display: none !important;
+}
+.leaflet-container {
+  font-family: var(--font-geist-sans), -apple-system, sans-serif;
+}
+
+/* Note expand modal animation */
+@keyframes expandUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.animate-expand-up {
+  animation: expandUp 0.28s cubic-bezier(0.34, 1.1, 0.64, 1) forwards;
+}
+
+/* Blog post prose styling */
+.blog-prose p {
+  margin-bottom: 1.1rem;
+}
+.blog-prose h2 {
+  font-size: 15px;
+  font-weight: 500;
+  color: #171717;
+  margin: 1.75rem 0 0.4rem;
+  letter-spacing: -0.01em;
+}
+.dark .blog-prose h2 {
+  color: #e5e5e5;
+}
+.blog-prose blockquote {
+  border-left: 2px solid #3a7d44;
+  padding: 0.15rem 0 0.15rem 1rem;
+  font-style: italic;
+  margin: 1.25rem 0;
+}
+.blog-prose hr {
+  border: 0;
+  border-top: 1px solid #f0ebe4;
+  margin: 1.5rem 0;
+}
+.dark .blog-prose hr {
+  border-top-color: #171717;
+}
+.blog-prose .end-mark {
+  text-align: center;
+  margin-top: 1.5rem;
+  letter-spacing: 0.3em;
+  color: #d4d4d4;
+}
+
+/* Spotify widget: fixed but aligned to the left edge of the content container */
+.spotify-fixed {
+  position: fixed;
+  bottom: 3.5rem;
+  z-index: 50;
+  left: max(2rem, calc(50vw - 460px + 2rem));
+}
+@media (min-width: 1280px) {
+  .spotify-fixed { left: max(2rem, calc(50vw - 600px + 2rem)); }
+}
+@media (min-width: 1536px) {
+  .spotify-fixed { left: max(2rem, calc(50vw - 750px + 2rem)); }
+}
+@media (min-width: 1920px) {
+  .spotify-fixed { left: max(2rem, calc(50vw - 950px + 2rem)); }
+}
+@media (min-width: 2560px) {
+  .spotify-fixed { left: max(2rem, calc(50vw - 1100px + 2rem)); }
+}
