@@ -43,8 +43,8 @@ export default function PhotographyPage() {
     <div className="animate-fade-up">
       <h1 className="text-[12px] uppercase tracking-widest text-accent font-medium mb-7">photography</h1>
       <p className="text-[16px] text-neutral-500 dark:text-neutral-400 leading-[1.9] max-w-[440px] xl:max-w-[580px] mb-7">
-        I shoot on film. these are from around New York City — color and black &amp; white,
-        35mm. day and night, mostly just wandering with a camera.
+        not a photographer — I just like carrying a film camera around. these are
+        from wandering New York City, day and night.
       </p>
 
       <div className="columns-2 xl:columns-3 gap-3 max-w-[620px] xl:max-w-[900px] 2xl:max-w-[1040px] mb-8">
@@ -66,20 +66,6 @@ export default function PhotographyPage() {
               className="transition-opacity duration-200 group-hover:opacity-80"
             />
           </button>
-        ))}
-      </div>
-
-      <div className="max-w-[440px] xl:max-w-[580px]">
-        {[
-          ['genre', 'street, documentary'],
-          ['medium', '35mm film, color & b&w'],
-          ['location', 'New York City'],
-          ['frames', `${photos.length}`],
-        ].map(([k, v], i) => (
-          <div key={k} className={`flex justify-between py-1.5 border-b border-neutral-100 dark:border-neutral-900 text-[15px] gap-4 ${i === 0 ? 'border-t border-neutral-100 dark:border-neutral-900' : ''}`}>
-            <span className="text-neutral-400 dark:text-neutral-600">{k}</span>
-            <span className="text-neutral-500 dark:text-neutral-400">{v}</span>
-          </div>
         ))}
       </div>
 
