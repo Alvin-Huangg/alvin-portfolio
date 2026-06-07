@@ -30,7 +30,7 @@ const projects = [
     id: 'amazon',
     meta: '02 / amazon, operations + automation',
     title: 'ML Automation Initiative',
-    desc: 'Spearheaded an ML automation program at Amazon improving accuracy to 99% and reducing cycle time by 200%. Built end-to-end in Python.',
+    desc: 'Spearheaded an ML automation program at Amazon improving accuracy to 99% and reducing cycle time by 200%.',
     metrics: [{ val: '99%', label: 'accuracy' }, { val: '200%', label: 'cycle time reduction' }],
     protected: true,
     tags: ['machine learning','Python','process automation','operations'],
