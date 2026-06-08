@@ -1,8 +1,12 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
+
+const MAX_ZOOM = 4
+const MIN_ZOOM = 1
+const ZOOM_STEP = 0.5
 
 type Photo = { src: string; alt: string; caption: string; w: number; h: number }
 
@@ -30,26 +34,71 @@ export default function PhotographyPage() {
   const [index, setIndex] = useState<number | null>(null)
   const [mounted, setMounted] = useState(false)
 
+  // Zoom + pan state for the expanded image.
+  const [zoom, setZoom] = useState(1)
+  const [pan, setPan] = useState({ x: 0, y: 0 })
+  const [dragging, setDragging] = useState(false)
+  const dragStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null)
+
   const open = index !== null
   const photo = open ? photos[index] : null
 
   useEffect(() => setMounted(true), [])
 
+  const resetView = () => { setZoom(1); setPan({ x: 0, y: 0 }) }
   const close = useCallback(() => setIndex(null), [])
   const next = useCallback(() => setIndex(i => (i === null ? i : (i + 1) % photos.length)), [])
   const prev = useCallback(() => setIndex(i => (i === null ? i : (i - 1 + photos.length) % photos.length)), [])
 
-  // Keyboard: Esc closes, arrows navigate.
+  const zoomIn = () => setZoom(z => Math.min(MAX_ZOOM, +(z + ZOOM_STEP).toFixed(2)))
+  const zoomOut = () => setZoom(z => {
+    const nz = Math.max(MIN_ZOOM, +(z - ZOOM_STEP).toFixed(2))
+    if (nz === 1) setPan({ x: 0, y: 0 })
+    return nz
+  })
+
+  // Reset zoom/pan whenever the photo changes or the viewer closes.
+  useEffect(() => { resetView() }, [index])
+
+  // Keyboard: Esc closes, arrows navigate, +/- zoom, 0 resets.
   useEffect(() => {
     if (!open) return
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') close()
       else if (e.key === 'ArrowRight') next()
       else if (e.key === 'ArrowLeft') prev()
+      else if (e.key === '+' || e.key === '=') zoomIn()
+      else if (e.key === '-' || e.key === '_') zoomOut()
+      else if (e.key === '0') resetView()
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [open, close, next, prev])
+
+  // Drag-to-pan handlers (only meaningful when zoomed in).
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (zoom <= 1) return
+    e.stopPropagation()
+    setDragging(true)
+    dragStart.current = { x: e.clientX, y: e.clientY, panX: pan.x, panY: pan.y }
+    ;(e.currentTarget as Element).setPointerCapture?.(e.pointerId)
+  }
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragStart.current) return
+    setPan({
+      x: dragStart.current.panX + (e.clientX - dragStart.current.x),
+      y: dragStart.current.panY + (e.clientY - dragStart.current.y),
+    })
+  }
+  const onPointerUp = () => { dragStart.current = null; setDragging(false) }
+
+  const onWheel = (e: React.WheelEvent) => {
+    setZoom(z => {
+      const nz = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, +(z - e.deltaY * 0.002).toFixed(2)))
+      if (nz === 1) setPan({ x: 0, y: 0 })
+      return nz
+    })
+  }
 
   // Lock body scroll while the lightbox is open.
   useEffect(() => {
@@ -96,6 +145,7 @@ export default function PhotographyPage() {
         <div
           className="fixed inset-0 z-[100] bg-black/93 backdrop-blur-sm flex items-center justify-center animate-lightbox-fade"
           onClick={close}
+          onWheel={onWheel}
           role="dialog"
           aria-modal="true"
           aria-label="Photo viewer"
@@ -110,6 +160,36 @@ export default function PhotographyPage() {
               <line x1="2" y1="2" x2="16" y2="16" /><line x1="16" y1="2" x2="2" y2="16" />
             </svg>
           </button>
+
+          {/* Zoom controls */}
+          <div
+            className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10 flex items-center gap-1 rounded-full bg-white/10 backdrop-blur px-1 py-1"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={zoomOut}
+              disabled={zoom <= MIN_ZOOM}
+              aria-label="Zoom out"
+              className="w-8 h-8 flex items-center justify-center rounded-full text-white/80 hover:text-white hover:bg-white/15 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </button>
+            <button
+              onClick={resetView}
+              aria-label="Reset zoom"
+              className="min-w-[44px] text-[12px] tabular-nums text-white/80 hover:text-white transition-colors"
+            >
+              {Math.round(zoom * 100)}%
+            </button>
+            <button
+              onClick={zoomIn}
+              disabled={zoom >= MAX_ZOOM}
+              aria-label="Zoom in"
+              className="w-8 h-8 flex items-center justify-center rounded-full text-white/80 hover:text-white hover:bg-white/15 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </button>
+          </div>
 
           {/* Prev */}
           <button
@@ -129,19 +209,34 @@ export default function PhotographyPage() {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
 
-          {/* Image — click doesn't close; key forces the zoom-in animation per photo */}
-          <Image
-            key={photo.src}
-            src={photo.src}
-            alt={photo.alt}
-            width={photo.w}
-            height={photo.h}
-            sizes="100vw"
-            quality={92}
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: '92vw', maxHeight: '86vh', width: 'auto', height: 'auto' }}
-            className="rounded-sm shadow-2xl animate-lightbox-zoom cursor-default"
-          />
+          {/* Wrapper carries the entrance animation; image carries zoom/pan so the
+              two transforms don't collide. Click doesn't close; drag pans when
+              zoomed; double-click toggles zoom. */}
+          <div key={photo.src} className="animate-lightbox-zoom" onClick={(e) => e.stopPropagation()}>
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              width={photo.w}
+              height={photo.h}
+              sizes="100vw"
+              quality={92}
+              draggable={false}
+              onDoubleClick={() => { zoom > 1 ? resetView() : setZoom(2) }}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              style={{
+                maxWidth: '92vw',
+                maxHeight: '86vh',
+                width: 'auto',
+                height: 'auto',
+                transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+                transition: dragging ? 'none' : 'transform 0.22s ease',
+                cursor: zoom > 1 ? (dragging ? 'grabbing' : 'grab') : 'default',
+              }}
+              className="rounded-sm shadow-2xl select-none"
+            />
+          </div>
 
           {/* Caption + counter */}
           <div className="absolute bottom-5 left-0 right-0 flex flex-col items-center gap-1 px-4 pointer-events-none">
