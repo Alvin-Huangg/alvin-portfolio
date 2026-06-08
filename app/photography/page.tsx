@@ -83,9 +83,9 @@ export default function PhotographyPage() {
               quality={82}
               className="transition-transform duration-300 ease-out group-hover:scale-[1.03]"
             />
-            {/* Subtle hover caption */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 px-3 pt-8 pb-2.5 bg-gradient-to-t from-black/55 via-black/15 to-transparent opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
-              <span className="text-[12px] text-white/90 tracking-wide lowercase">{p.caption}</span>
+            {/* Subtle hover caption — centered over the photo */}
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <span className="text-[13px] text-white tracking-wide lowercase px-4 text-center">{p.caption}</span>
             </div>
           </button>
         ))}
