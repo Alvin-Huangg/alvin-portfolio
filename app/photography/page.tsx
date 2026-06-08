@@ -1,43 +1,61 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 
-type Photo = { src: string; alt: string; w: number; h: number }
+type Photo = { src: string; alt: string; caption: string; w: number; h: number }
 
 // Landscape film scans are 2000×1326; the newer 35mm frames are 1024×1452.
 // Storing real dimensions lets next/image reserve correct space (no layout
 // shift) and keeps every aspect ratio honest in the masonry.
+// `caption` is the short, casual line shown on hover.
 const photos: Photo[] = [
-  { src: '/photography/times-square-knicks.jpeg',  alt: 'Knicks fan draped in a flag, Times Square at night — 35mm', w: 1024, h: 1452 },
-  { src: '/photography/000084010009.jpg',          alt: 'Pedestrians on a New York City sidewalk — 35mm film',      w: 2000, h: 1326 },
-  { src: '/photography/botanical-brothers.jpeg',   alt: 'Botanical Brothers flower cart on Irving Place — 35mm',    w: 1024, h: 1452 },
-  { src: '/photography/000084010017.jpg',          alt: 'Street corner in NYC, afternoon light — 35mm film',        w: 2000, h: 1326 },
-  { src: '/photography/chinatown-fruit-stand.jpeg',alt: 'Late-night fruit stand in Chinatown — 35mm',               w: 1024, h: 1452 },
-  { src: '/photography/nypd-cruiser.jpeg',         alt: 'NYPD cruiser on a tree-lined street — 35mm',               w: 1024, h: 1452 },
-  { src: '/photography/000084010019.jpg',          alt: 'Urban scene, New York City — 35mm film',                   w: 2000, h: 1326 },
-  { src: '/photography/pull-ahead-garage.jpeg',    alt: '“Pull Ahead” neon in a parking garage — 35mm',             w: 1024, h: 1452 },
-  { src: '/photography/000084010029.jpg',          alt: 'City life captured on film, NYC — 35mm',                   w: 2000, h: 1326 },
-  { src: '/photography/noodle-bar-portrait.jpeg',  alt: 'A friend at a noodle bar with a Sapporo — 35mm',           w: 1024, h: 1452 },
-  { src: '/photography/uncle-lou-sign.jpeg',       alt: 'Uncle Lou neon sign, Chinatown at night — 35mm',           w: 1024, h: 1452 },
-  { src: '/photography/000084010031.jpg',          alt: 'Documentary street moment, New York City — 35mm film',     w: 2000, h: 1326 },
-  { src: '/photography/000084010036.jpg',          alt: 'Black and white street photograph, NYC — 35mm film',       w: 2000, h: 1326 },
+  { src: '/photography/times-square-knicks.jpeg',  alt: 'Knicks fan draped in a flag, Times Square at night — 35mm', caption: 'times square, midnight',     w: 1024, h: 1452 },
+  { src: '/photography/000084010009.jpg',          alt: 'Pedestrians on a New York City sidewalk — 35mm film',      caption: 'sidewalk, nyc',          w: 2000, h: 1326 },
+  { src: '/photography/botanical-brothers.jpeg',   alt: 'Botanical Brothers flower cart on Irving Place — 35mm',    caption: 'flower cart, irving pl',  w: 1024, h: 1452 },
+  { src: '/photography/000084010017.jpg',          alt: 'Street corner in NYC, afternoon light — 35mm film',        caption: 'corner, afternoon light', w: 2000, h: 1326 },
+  { src: '/photography/chinatown-fruit-stand.jpeg',alt: 'Late-night fruit stand in Chinatown — 35mm',               caption: 'chinatown fruit stand',   w: 1024, h: 1452 },
+  { src: '/photography/nypd-cruiser.jpeg',         alt: 'NYPD cruiser on a tree-lined street — 35mm',               caption: 'quiet street',            w: 1024, h: 1452 },
+  { src: '/photography/000084010019.jpg',          alt: 'Urban scene, New York City — 35mm film',                   caption: 'downtown blocks',         w: 2000, h: 1326 },
+  { src: '/photography/pull-ahead-garage.jpeg',    alt: '“Pull Ahead” neon in a parking garage — 35mm',             caption: 'pull ahead',              w: 1024, h: 1452 },
+  { src: '/photography/000084010029.jpg',          alt: 'City life captured on film, NYC — 35mm',                   caption: 'city in motion',          w: 2000, h: 1326 },
+  { src: '/photography/noodle-bar-portrait.jpeg',  alt: 'A friend at a noodle bar with a Sapporo — 35mm',           caption: 'noodle bar, sapporo',     w: 1024, h: 1452 },
+  { src: '/photography/uncle-lou-sign.jpeg',       alt: 'Uncle Lou neon sign, Chinatown at night — 35mm',           caption: 'uncle lou, chinatown',    w: 1024, h: 1452 },
+  { src: '/photography/000084010031.jpg',          alt: 'Documentary street moment, New York City — 35mm film',     caption: 'a street moment',         w: 2000, h: 1326 },
+  { src: '/photography/000084010036.jpg',          alt: 'Black and white street photograph, NYC — 35mm film',       caption: 'black & white street',    w: 2000, h: 1326 },
 ]
 
 export default function PhotographyPage() {
-  const [lightbox, setLightbox] = useState<Photo | null>(null)
+  const [index, setIndex] = useState<number | null>(null)
+  const [mounted, setMounted] = useState(false)
 
+  const open = index !== null
+  const photo = open ? photos[index] : null
+
+  useEffect(() => setMounted(true), [])
+
+  const close = useCallback(() => setIndex(null), [])
+  const next = useCallback(() => setIndex(i => (i === null ? i : (i + 1) % photos.length)), [])
+  const prev = useCallback(() => setIndex(i => (i === null ? i : (i - 1 + photos.length) % photos.length)), [])
+
+  // Keyboard: Esc closes, arrows navigate.
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightbox(null) }
+    if (!open) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+      else if (e.key === 'ArrowRight') next()
+      else if (e.key === 'ArrowLeft') prev()
+    }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [])
+  }, [open, close, next, prev])
 
   // Lock body scroll while the lightbox is open.
   useEffect(() => {
-    document.body.style.overflow = lightbox ? 'hidden' : ''
+    document.body.style.overflow = open ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
-  }, [lightbox])
+  }, [open])
 
   return (
     <div className="animate-fade-up">
@@ -48,49 +66,90 @@ export default function PhotographyPage() {
       </p>
 
       <div className="columns-2 xl:columns-3 gap-3 max-w-[620px] xl:max-w-[900px] 2xl:max-w-[1040px] mb-8">
-        {photos.map((photo) => (
+        {photos.map((p, i) => (
           <button
-            key={photo.src}
-            className="block w-full break-inside-avoid mb-3 overflow-hidden rounded-sm cursor-zoom-in group p-0 border-0 bg-transparent"
-            onClick={() => setLightbox(photo)}
-            aria-label={`View larger: ${photo.alt}`}
+            key={p.src}
+            className="relative block w-full break-inside-avoid mb-3 overflow-hidden rounded-sm cursor-zoom-in group p-0 border-0 bg-transparent"
+            onClick={() => setIndex(i)}
+            aria-label={`View larger: ${p.alt}`}
           >
             <Image
-              src={photo.src}
-              alt={photo.alt}
-              width={photo.w}
-              height={photo.h}
+              src={p.src}
+              alt={p.alt}
+              width={p.w}
+              height={p.h}
               sizes="(max-width: 1280px) 50vw, 33vw"
               style={{ width: '100%', height: 'auto' }}
               quality={82}
-              className="transition-opacity duration-200 group-hover:opacity-80"
+              className="transition-transform duration-300 ease-out group-hover:scale-[1.03]"
             />
+            {/* Subtle hover caption */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 px-3 pt-8 pb-2.5 bg-gradient-to-t from-black/55 via-black/15 to-transparent opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
+              <span className="text-[12px] text-white/90 tracking-wide lowercase">{p.caption}</span>
+            </div>
           </button>
         ))}
       </div>
 
-      {lightbox && (
+      {/* Lightbox — portaled to body so it escapes the zoomed <main> wrapper */}
+      {mounted && open && photo && createPortal(
         <div
-          className="fixed inset-0 bg-black/92 z-50 flex items-center justify-center p-4 sm:p-8 cursor-zoom-out"
-          onClick={() => setLightbox(null)}
+          className="fixed inset-0 z-[100] bg-black/93 backdrop-blur-sm flex items-center justify-center animate-lightbox-fade"
+          onClick={close}
           role="dialog"
           aria-modal="true"
-          aria-label="Photo lightbox"
+          aria-label="Photo viewer"
         >
+          {/* Close */}
+          <button
+            onClick={(e) => { e.stopPropagation(); close() }}
+            aria-label="Close"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 w-10 h-10 flex items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors z-10"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <line x1="2" y1="2" x2="16" y2="16" /><line x1="16" y1="2" x2="2" y2="16" />
+            </svg>
+          </button>
+
+          {/* Prev */}
+          <button
+            onClick={(e) => { e.stopPropagation(); prev() }}
+            aria-label="Previous photo"
+            className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors z-10"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+          </button>
+
+          {/* Next */}
+          <button
+            onClick={(e) => { e.stopPropagation(); next() }}
+            aria-label="Next photo"
+            className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors z-10"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+          </button>
+
+          {/* Image — click doesn't close; key forces the zoom-in animation per photo */}
           <Image
-            src={lightbox.src}
-            alt={lightbox.alt}
-            width={lightbox.w}
-            height={lightbox.h}
+            key={photo.src}
+            src={photo.src}
+            alt={photo.alt}
+            width={photo.w}
+            height={photo.h}
             sizes="100vw"
-            style={{ maxWidth: '100%', maxHeight: '88vh', width: 'auto', height: 'auto' }}
-            quality={90}
-            className="rounded-sm"
+            quality={92}
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: '92vw', maxHeight: '86vh', width: 'auto', height: 'auto' }}
+            className="rounded-sm shadow-2xl animate-lightbox-zoom cursor-default"
           />
-          <p className="absolute bottom-5 left-0 right-0 text-center text-white/40 text-[13px] tracking-wider px-4">
-            {lightbox.alt} · click anywhere to close
-          </p>
-        </div>
+
+          {/* Caption + counter */}
+          <div className="absolute bottom-5 left-0 right-0 flex flex-col items-center gap-1 px-4 pointer-events-none">
+            <span className="text-[13px] text-white/80 tracking-wide lowercase">{photo.caption}</span>
+            <span className="text-[11px] text-white/40 tabular-nums tracking-widest">{index + 1} / {photos.length}</span>
+          </div>
+        </div>,
+        document.body,
       )}
     </div>
   )

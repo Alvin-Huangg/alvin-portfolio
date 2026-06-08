@@ -153,6 +153,11 @@ html:not(.dark) .border-neutral-200 {
   animation: fadeUp 0.25s ease forwards;
 }
 
+@keyframes lightboxFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lightboxZoom { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+.animate-lightbox-fade { animation: lightboxFade 0.2s ease forwards; }
+.animate-lightbox-zoom { animation: lightboxZoom 0.28s cubic-bezier(0.34, 1.2, 0.64, 1) forwards; }
+
 .animate-pulse-dot {
   animation: pulse 1.8s infinite;
 }
