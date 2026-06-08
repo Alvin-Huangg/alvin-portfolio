@@ -15,7 +15,9 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className={`relative w-10 h-6 rounded-full border-none outline-none cursor-pointer transition-colors duration-250 shadow-inner flex-shrink-0 ${
+      role="switch"
+      aria-checked={isDark}
+      className={`relative w-10 h-6 rounded-full border-none cursor-pointer transition-colors duration-250 shadow-inner flex-shrink-0 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 ${
         isDark ? 'bg-accent' : 'bg-neutral-300'
       }`}
       title="Toggle dark mode"

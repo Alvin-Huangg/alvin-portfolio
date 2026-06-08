@@ -63,7 +63,9 @@ export default function BlogClient({ posts: initialPosts }: { posts: Post[] }) {
   const [adminPwStored, setAdminPwStored] = useState('')
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setExpanded(false) }
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setExpanded(false); setShowAdminLogin(false) }
+    }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [])
@@ -404,9 +406,15 @@ export default function BlogClient({ posts: initialPosts }: { posts: Post[] }) {
 
       {/* Admin login modal */}
       {showAdminLogin && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-7 w-full max-w-sm">
-            <p className="text-[16px] font-medium mb-1">writer access</p>
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="writer-access-title"
+          onClick={() => { setShowAdminLogin(false); setAdminPw(''); setAdminPwError(false) }}
+        >
+          <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-7 w-full max-w-sm" onClick={e => e.stopPropagation()}>
+            <p id="writer-access-title" className="text-[16px] font-medium mb-1">writer access</p>
             <p className="text-[14px] text-neutral-400 dark:text-neutral-600 mb-5 leading-relaxed">enter your password to write and publish notes.</p>
             <input
               type="password"
@@ -414,6 +422,8 @@ export default function BlogClient({ posts: initialPosts }: { posts: Post[] }) {
               onChange={e => { setAdminPw(e.target.value); setAdminPwError(false) }}
               onKeyDown={e => e.key === 'Enter' && handleAdminLogin()}
               placeholder="password"
+              aria-label="Writer password"
+              aria-invalid={adminPwError}
               autoFocus
               className="w-full text-[15px] px-3 py-2 border border-neutral-200 dark:border-neutral-700 rounded-lg bg-transparent text-neutral-900 dark:text-neutral-100 outline-none focus:border-accent mb-3"
             />

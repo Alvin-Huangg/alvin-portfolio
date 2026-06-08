@@ -85,6 +85,7 @@ export default function Sidebar({ hidden, onClose }: { hidden?: boolean; onClose
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={isActive ? 'page' : undefined}
                   onClick={() => { if (window.innerWidth < 768) onClose?.() }}
                   className={`block py-1.5 px-2.5 -mx-2.5 rounded-md group transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none ${
                     isActive

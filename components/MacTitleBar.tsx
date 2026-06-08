@@ -30,21 +30,23 @@ export default function MacTitleBar({ sidebarHidden, onToggleSidebar }: Props) {
   }, [])
 
   return (
-    <div className="h-11 border-b border-neutral-200 dark:border-neutral-800 sticky top-0 z-50 backdrop-blur-md bg-white/85 dark:bg-neutral-950/85 transition-colors">
+    <header className="h-11 border-b border-neutral-200 dark:border-neutral-800 sticky top-0 z-50 backdrop-blur-md bg-white/85 dark:bg-neutral-950/85 transition-colors">
       <div className="max-w-[920px] xl:max-w-[1200px] 2xl:max-w-[1500px] 3xl:max-w-[1900px] 4xl:max-w-[2200px] mx-auto w-full px-4 md:px-8 h-full flex items-center relative">
-        {/* Mac dots — left */}
+        {/* Mac dots — left. before:-inset expands the click target past the 11px visual (Fitts's law). */}
         <div className="flex items-center gap-[6px]">
           <button
             onClick={() => window.open('https://www.linkedin.com/in/alvinhuangxi/', '_blank')}
-            className="w-[11px] h-[11px] rounded-full bg-[#ff5f57] border border-[#e0443e] group relative flex items-center justify-center cursor-pointer"
-            title="LinkedIn"
+            className="w-[11px] h-[11px] rounded-full bg-[#ff5f57] border border-[#e0443e] group relative flex items-center justify-center cursor-pointer before:content-[''] before:absolute before:-inset-[6px] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
+            title="Open LinkedIn"
+            aria-label="Open LinkedIn profile in a new tab"
           >
             <span className="opacity-0 group-hover:opacity-100 text-[6px] font-bold text-black/60 transition-opacity">✕</span>
           </button>
           <button
             onClick={onToggleSidebar}
-            className="w-[11px] h-[11px] rounded-full bg-[#febc2e] border border-[#d4a017] group relative flex items-center justify-center cursor-pointer"
+            className="w-[11px] h-[11px] rounded-full bg-[#febc2e] border border-[#d4a017] group relative flex items-center justify-center cursor-pointer before:content-[''] before:absolute before:-inset-[6px] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1"
             title="Toggle sidebar"
+            aria-label="Toggle navigation sidebar"
           >
             <span className="opacity-0 group-hover:opacity-100 text-[9px] font-bold text-black/60 transition-opacity leading-none">−</span>
           </button>
@@ -62,6 +64,6 @@ export default function MacTitleBar({ sidebarHidden, onToggleSidebar }: Props) {
           <ThemeToggle />
         </div>
       </div>
-    </div>
+    </header>
   )
 }

@@ -1,3 +1,7 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = { title: 'Contact' }
+
 export default function ContactPage() {
   const links = [
     { key: 'email', val: 'alvinhhuangg@gmail.com', href: 'mailto:alvinhhuangg@gmail.com' },

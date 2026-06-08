@@ -1,5 +1,8 @@
+import type { Metadata } from 'next'
 import { client } from '@/lib/sanity'
 import BlogClient, { type Post } from './BlogClient'
+
+export const metadata: Metadata = { title: 'Blog' }
 
 const NORI_JAPAN_BODY = `
 <p>When people ask me how I opened a fast food franchise at 24 with no prior business experience, I think they expect a story about connections, or capital, or some kind of inherited knowledge. The real answer is less glamorous and, I think, more useful: I just refused to let not knowing something be a reason to stop moving. I learned as I went. And then I went.</p>

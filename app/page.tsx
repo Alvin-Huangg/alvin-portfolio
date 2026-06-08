@@ -1,3 +1,6 @@
+// Home uses the root layout's full branded title/description (best for the
+// landing tab + SEO), so no per-page metadata override here.
+
 export default function AboutPage() {
   const facts = [
     { key: 'based in',     val: 'Phoenix, AZ' },

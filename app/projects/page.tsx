@@ -1,7 +1,6 @@
 'use client'
 
-import { Suspense } from 'react'
-import { useState } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import AppleProjectDetail from '@/components/AppleProjectDetail'
 import GroceriesProjectDetail from '@/components/GroceriesProjectDetail'
@@ -151,6 +150,16 @@ function ProjectsPageInner() {
   const selectProject = (id: string) => router.push(`/projects?id=${id}`, { scroll: false })
   const clearProject = () => router.push('/projects', { scroll: false })
 
+  // Esc closes the password modal (consistent with the blog/photography modals).
+  useEffect(() => {
+    if (!showPw) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setShowPw(false); setPw(''); setPwError(false) }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [showPw])
+
   const handleClick = (id: string, isProtected: boolean) => {
     if (isProtected && !unlocked) {
       setPendingId(id)
@@ -197,7 +206,8 @@ function ProjectsPageInner() {
               onClick={() => handleClick(p.id, p.protected)}
               role="button"
               tabIndex={0}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleClick(p.id, p.protected) }}
+              aria-label={`${p.title}${p.protected ? ' (password protected)' : ''}`}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(p.id, p.protected) } }}
               className={`py-4 px-2 border-b border-neutral-100 dark:border-neutral-900 cursor-pointer border-l-2 border-l-transparent hover:border-l-accent hover:bg-accent/5 rounded-r-sm transition-all duration-150 group ${i === 0 ? 'border-t border-neutral-100 dark:border-neutral-900' : ''}`}
             >
               <p className="text-[12px] uppercase tracking-wider text-neutral-400 dark:text-neutral-600 mb-1">{String(i + 1).padStart(2, '0')} / {metaLabel(p.meta)}</p>
@@ -293,9 +303,15 @@ function ProjectsPageInner() {
       ) : null}
 
       {showPw && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-8 w-80">
-            <p className="text-[16px] font-medium mb-1">protected content</p>
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pw-modal-title"
+          onClick={() => { setShowPw(false); setPw(''); setPwError(false) }}
+        >
+          <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-8 w-80" onClick={e => e.stopPropagation()}>
+            <p id="pw-modal-title" className="text-[16px] font-medium mb-1">protected content</p>
             <p className="text-[15px] text-neutral-400 dark:text-neutral-600 mb-5 leading-relaxed">this section contains proprietary Amazon work. enter the password to continue.</p>
             <input
               type="password"
@@ -303,6 +319,8 @@ function ProjectsPageInner() {
               onChange={e => { setPw(e.target.value); setPwError(false) }}
               onKeyDown={e => e.key === 'Enter' && checkPw()}
               placeholder="password"
+              aria-label="Password"
+              aria-invalid={pwError}
               autoFocus
               className="w-full text-[16px] px-3 py-2 border border-neutral-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 outline-none focus:border-accent mb-3 font-light"
             />

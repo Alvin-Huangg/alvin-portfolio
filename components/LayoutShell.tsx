@@ -44,7 +44,9 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
       <div className="flex max-w-[920px] xl:max-w-[1200px] 2xl:max-w-[1500px] 3xl:max-w-[1900px] 4xl:max-w-[2200px] mx-auto w-full px-4 md:px-8 flex-1">
         <Sidebar hidden={sidebarHidden} onClose={() => setSidebarHidden(true)} />
         <main
-          className={`flex-1 pt-5 pb-8 md:pt-7 md:pb-12 min-w-0 transition-[padding] duration-500 ease-in-out ${
+          id="main-content"
+          tabIndex={-1}
+          className={`flex-1 pt-5 pb-8 md:pt-7 md:pb-12 min-w-0 transition-[padding] duration-500 ease-in-out focus:outline-none ${
             !isMobile && sidebarHidden ? 'pl-0' : 'pl-0 md:pl-10'
           }`}
           aria-label="Main content"
