@@ -39,12 +39,12 @@ const skillGroups = [
 export default function SkillsPage() {
   return (
     <div className="animate-fade-up">
-      <h1 className="text-[12px] uppercase tracking-widest text-accent font-medium mb-2">skills</h1>
-      <p className="text-[15px] text-neutral-400 dark:text-neutral-600 mb-10 max-w-[480px]">
+      <h1 className="text-[12px] uppercase tracking-widest text-accent font-medium mb-6">skills</h1>
+      <p className="text-[15px] text-neutral-400 dark:text-neutral-600 mb-8 content-width">
         every skill below has been applied in real work — click the tag to see where.
       </p>
 
-      <div className="max-w-[580px] xl:max-w-[720px] 2xl:max-w-[860px] space-y-8">
+      <div className="content-width space-y-8">
         {skillGroups.map((group) => (
           <div key={group.label}>
             <p className="text-[11px] uppercase tracking-widest text-neutral-400 dark:text-neutral-600 font-medium mb-2">

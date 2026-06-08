@@ -53,7 +53,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
         >
           <div
             style={{
-              zoom: !isMobile && sidebarHidden ? 1.2 : 1.08,
+              zoom: !isMobile && sidebarHidden ? 1.12 : 1.05,
               transition: 'zoom 0.45s cubic-bezier(0.34, 1.4, 0.64, 1)',
             }}
           >

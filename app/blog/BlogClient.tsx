@@ -184,7 +184,7 @@ export default function BlogClient({ posts: initialPosts }: { posts: Post[] }) {
 
       <div
         className="flex border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden"
-        style={{ height: 'calc((100vh - 200px) / 1.08)', minHeight: '420px' }}
+        style={{ height: 'calc((100vh - 200px) / 1.05)', minHeight: '420px' }}
       >
         {/* ── FOLDERS ── */}
         <div className={`

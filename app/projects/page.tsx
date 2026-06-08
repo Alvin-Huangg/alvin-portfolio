@@ -196,10 +196,10 @@ function ProjectsPageInner() {
 
   return (
     <div className="animate-fade-up">
-      <h1 className="text-[12px] uppercase tracking-widest text-accent font-medium mb-7">other projects</h1>
+      <h1 className="text-[12px] uppercase tracking-widest text-accent font-medium mb-6">other projects</h1>
 
       {!selected ? (
-        <div className="max-w-[520px] xl:max-w-[680px] 2xl:max-w-[780px] 3xl:max-w-[900px]">
+        <div className="content-width">
           {orderedProjects.map((p, i) => (
             <div
               key={p.id}
@@ -229,7 +229,7 @@ function ProjectsPageInner() {
           ))}
         </div>
       ) : proj ? (
-        <div className="max-w-[520px] xl:max-w-[680px] 2xl:max-w-[780px] 3xl:max-w-[900px] animate-fade-up">
+        <div className="content-width animate-fade-up">
           <button onClick={clearProject} className="text-[13px] text-neutral-400 hover:text-accent mb-7 flex items-center gap-1 transition-colors hover:-translate-x-0.5 transform duration-150 focus-visible:ring-2 focus-visible:ring-accent rounded">
             ← back to projects
           </button>

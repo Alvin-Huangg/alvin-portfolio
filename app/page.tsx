@@ -18,7 +18,7 @@ export default function AboutPage() {
       <h1 className="text-[12px] uppercase tracking-widest text-accent font-medium mb-6">about me</h1>
 
       {/* Hero */}
-      <div className="mb-8 pb-8 border-b border-neutral-100 dark:border-neutral-900 max-w-[560px] xl:max-w-[680px] 2xl:max-w-[780px]">
+      <div className="mb-8 pb-8 border-b border-neutral-100 dark:border-neutral-900 content-width">
         <p className="text-[13px] text-neutral-400 dark:text-neutral-600 mb-3 tracking-wide">
           Operations Associate II · Amazon · Phoenix, AZ
         </p>
@@ -27,7 +27,7 @@ export default function AboutPage() {
         </h2>
       </div>
 
-      <div className="space-y-4 mb-8 max-w-[540px] xl:max-w-[660px] 2xl:max-w-[760px] 3xl:max-w-[860px]">
+      <div className="space-y-4 mb-8 content-width">
         <p className="text-[17px] text-neutral-500 dark:text-neutral-400 leading-[1.8]">
           I lead operations at <strong className="font-medium text-neutral-900 dark:text-neutral-100">Amazon</strong>, managing outbound and inbound workflows, driving process improvements, and building automation tools that actually move the needle.
         </p>
@@ -57,7 +57,7 @@ export default function AboutPage() {
 
       </div>
 
-      <div className="max-w-[540px] xl:max-w-[660px] 2xl:max-w-[760px] 3xl:max-w-[860px]">
+      <div className="content-width">
         {facts.map((f, i) => (
           <div
             key={f.key}

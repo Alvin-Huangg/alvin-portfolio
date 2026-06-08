@@ -63,6 +63,14 @@ html:not(.dark) .text-neutral-500 { color: #585858; }
 /* Dark mode: neutral-600 used as text is too dim (~2.2:1 on near-black). */
 .dark .dark\:text-neutral-600 { color: #8a8a8a; }
 
+/* ── Shared content column ──────────────────────────────────────
+   One width scale for every text/list page so content stops shifting
+   as you navigate. Galleries (photography) keep their own wider scale. */
+.content-width { max-width: 560px; }
+@media (min-width: 1280px) { .content-width { max-width: 680px; } }
+@media (min-width: 1536px) { .content-width { max-width: 780px; } }
+@media (min-width: 1920px) { .content-width { max-width: 880px; } }
+
 ::selection {
   background: #edf5ee;
   color: #3a7d44;

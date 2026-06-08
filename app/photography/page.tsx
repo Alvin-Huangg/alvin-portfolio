@@ -108,8 +108,8 @@ export default function PhotographyPage() {
 
   return (
     <div className="animate-fade-up">
-      <h1 className="text-[12px] uppercase tracking-widest text-accent font-medium mb-7">photography</h1>
-      <p className="text-[16px] text-neutral-500 dark:text-neutral-400 leading-[1.9] max-w-[440px] xl:max-w-[580px] mb-7">
+      <h1 className="text-[12px] uppercase tracking-widest text-accent font-medium mb-6">photography</h1>
+      <p className="text-[16px] text-neutral-500 dark:text-neutral-400 leading-[1.9] content-width mb-8">
         not a photographer — I just like carrying a film camera around. these are
         from wandering New York City, day and night.
       </p>
