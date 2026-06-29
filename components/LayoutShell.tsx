@@ -1,11 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import MacTitleBar from './MacTitleBar'
 import Sidebar from './Sidebar'
 import SpotifyWidget from './SpotifyWidget'
 
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
   const [sidebarHidden, setSidebarHidden] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -19,6 +21,12 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
   }, [])
+
+  // Standalone, customer-facing routes (e.g. the QR-code menu) render without
+  // the portfolio chrome — no sidebar, title bar, or Spotify widget.
+  if (pathname?.startsWith('/menu')) {
+    return <>{children}</>
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

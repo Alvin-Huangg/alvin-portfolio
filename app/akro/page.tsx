@@ -66,9 +66,20 @@ export default function AkroPage() {
 
             <p className="text-[14px] text-white/65 tracking-wide mb-4">the cornerstone for community</p>
 
-            <div className="inline-flex items-center gap-1.5 text-[11px] text-[#e8c97a] border border-[#e8c97a]/30 rounded-full px-3 py-1 uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#e8c97a] animate-pulse-dot" />
-              actively building
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div className="inline-flex items-center gap-1.5 text-[11px] text-[#e8c97a] border border-[#e8c97a]/30 rounded-full px-3 py-1 uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#e8c97a] animate-pulse-dot" />
+                actively building
+              </div>
+              <a
+                href="/menu"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-[11px] text-[#e8c97a] bg-[#e8c97a]/10 border border-[#e8c97a]/40 rounded-full px-3 py-1 uppercase tracking-wider hover:bg-[#e8c97a]/20 hover:border-[#e8c97a]/60 transition-colors"
+              >
+                pop-up menu
+                <span aria-hidden="true">↗</span>
+              </a>
             </div>
           </div>
         </div>
